@@ -1,0 +1,71 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+USERNAME = "sowndaryas_WzuHaA"
+ACCESS_KEY = "8QYpvFDqgwNPowj8dQru"
+BROWSERSTACK_URL = f"https://{USERNAME}:{ACCESS_KEY}@hub.browserstack.com/wd/hub"
+
+def get_driver():
+    options = webdriver.ChromeOptions()
+    bstack_options = {
+        "os": "Windows",
+        "osVersion": "11",
+        "browserName": "Chrome",
+        "browserVersion": "latest",
+        "sessionName": "Testathon Automation"
+    }
+    options.set_capability('bstack:options', bstack_options)
+    driver = webdriver.Remote(command_executor=BROWSERSTACK_URL, options=options)
+    return driver
+
+# ------------------ TEST CASES ------------------
+
+def test_homepage_title():
+    driver = get_driver()
+    driver.get("https://testathon.live/")
+    assert "StackDemo" in driver.title
+    driver.quit()
+
+def test_homepage_buttons():
+    driver = get_driver()
+    driver.get("https://testathon.live/")
+    
+    button_ids = ["offers", "orders", "favourites", "signin"]
+    for btn_id in button_ids:
+        element = driver.find_element(By.ID, btn_id)
+        assert element.is_displayed(), f"{btn_id} button is not visible"
+    
+    driver.quit()
+
+def test_sign_in():
+    driver = get_driver()
+    driver.get("https://testathon.live/signin")
+
+    driver.find_element(By.ID, "email").send_keys("testuser@example.com")
+    driver.find_element(By.ID, "password").send_keys("TestPass123")
+    driver.find_element(By.ID, "signin").click()
+
+    # Check for either a welcome message or dashboard
+    assert "Welcome" in driver.page_source or "Dashboard" in driver.title
+    driver.quit()
+
+def test_favorites_button():
+    driver = get_driver()
+    driver.get("https://testathon.live/")
+    driver.find_element(By.ID, "favourites").click()
+    assert "favourites" in driver.current_url.lower() or "Favorites" in driver.title
+    driver.quit()
+
+def test_order_button():
+    driver = get_driver()
+    driver.get("https://testathon.live/")
+    driver.find_element(By.ID, "orders").click()
+    assert "orders" in driver.current_url.lower() or "Order" in driver.title
+    driver.quit()
+
+def test_offers_button():
+    driver = get_driver()
+    driver.get("https://testathon.live/")
+    driver.find_element(By.ID, "offers").click()
+    assert "offers" in driver.current_url.lower() or "Offers" in driver.title
+    driver.quit()
