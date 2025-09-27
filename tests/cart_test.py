@@ -31,6 +31,14 @@ def driver():
     driver.quit()
 
 def test_add_to_cart(driver):
+    """
+    Test that all items can be added to the cart and the subtotal is displayed.
+    Steps:
+    - Close any pop-ups.
+    - Click all 'Buy' buttons to add items.
+    - Open the cart and print item details.
+    - Assert that the subtotal is not empty.
+    """
     driver.get("https://testathon.live/")
     wait = WebDriverWait(driver, 20)
 
@@ -77,6 +85,12 @@ def test_add_to_cart(driver):
     assert subtotal != ""
 
 def test_cart_empty_on_load(driver):
+    """
+    Test that the cart is empty when the page is first loaded.
+    Steps:
+    - Open the cart immediately after page load.
+    - Assert that there are no items in the cart.
+    """
     driver.get("https://testathon.live/")
     wait = WebDriverWait(driver, 10)
     cart_icon = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "bag")))
@@ -86,6 +100,13 @@ def test_cart_empty_on_load(driver):
     assert len(cart_items) == 0, "Cart should be empty on initial load"
 
 def test_remove_item_from_cart(driver):
+    """
+    Test removing an item from the cart.
+    Steps:
+    - Add an item to the cart.
+    - Open the cart and click the remove button.
+    - Assert that the cart is empty after removal.
+    """
     driver.get("https://testathon.live/")
     wait = WebDriverWait(driver, 20)
     buy_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "shelf-item__buy-btn")))
@@ -101,6 +122,14 @@ def test_remove_item_from_cart(driver):
     assert len(cart_items) == 0, "Cart should be empty after removing item"
 
 def test_cart_persists_after_page_refresh(driver):
+    """
+    Test that cart items persist after refreshing the page.
+    Steps:
+    - Add an item to the cart.
+    - Open the cart and verify items are present.
+    - Refresh the page and open the cart again.
+    - Assert that the items are still present in the cart.
+    """
     driver.get("https://testathon.live/")
     wait = WebDriverWait(driver, 20)
     buy_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "shelf-item__buy-btn")))
